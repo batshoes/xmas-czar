@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Christmas Czlayer</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <script src="https://unpkg.com/vue@next" defer></script>
     <script src="app.js" defer></script>
   </head>
+
   <body>
     <header>
       <h1>Christmas Czlayer</h1>
@@ -44,18 +43,24 @@
       </section>
       <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul>
-          <li v-for="logMessage in logMessages">
-            <span :class="{'log--player': logMessage.actionBy === 'player', 'log--monster': logMessage.actionBy !== 'player'}"> {{ logMessage.actionBy.toUpperCase() }}</span>
-            <span v-if="logMessage.actionType === 'heal'"> heals themselves with {{logMessage.actionName}} for <span class="log--heal">{{ logMessage.actionValue }}</span></span>
-            <span v-else-if="logMessage.actionType === 'special-attack'">
-              attacks with <span class="log--special-action">{{ logMessage.actionName}}</span> and deals <span class="log--damage">{{ logMessage.actionValue }}</span>
-            </span>
-            <span v-else>
-              attacks with <span class="log--action">{{ logMessage.actionName}}</span> and deals <span class="log--damage">{{ logMessage.actionValue }}</span>
-            </span>
-          </li>
-        </ul>
+        <div class="container" v-for='(round, name) in logMessages.slice().reverse()'>
+          <ul>
+            <span>Round {{ round[0].actionRound }}</span>
+            <br>
+            <li v-for='logMessage in round'>
+              <span :class="{'log--player': logMessage.actionBy === 'player', 'log--monster': logMessage.actionBy !== 'player'}">
+                {{ logMessage.actionBy.toUpperCase() }}
+              </span>
+              <span v-if="logMessage.actionType === 'heal'"> heals themselves with {{logMessage.actionName}} for <span class="log--heal">{{ logMessage.actionValue }}</span></span>
+              <span v-else-if="logMessage.actionType === 'special-attack'">
+                attacks with <span class="log--special-action">{{ logMessage.actionName}}</span> and deals <span class="log--damage">{{ logMessage.actionValue }}</span>
+              </span>
+              <span v-else>
+                attacks with <span class="log--action">{{ logMessage.actionName}}</span> and deals <span class="log--damage">{{ logMessage.actionValue }}</span>
+              </span>
+            </li>
+          </ul>
+        </div>
       </section>
     </div>
   </body>

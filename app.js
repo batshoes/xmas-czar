@@ -11,14 +11,13 @@ function getPercentage(current, max) {
 const app = Vue.createApp({
   data() {
     return {
-      // playerMaxHealth: 100,
-      // playerHealth: 100,
       monsterMaxHealth: 2000,
       monsterHealth: 2000,
       currentRound: 0,
       winner: null,
       logMessages: [],
       currentEnemy: 0,
+      timestamp: "",
       player: {
         health: 2000,
         maxHealth: 2000,
@@ -141,16 +140,12 @@ const app = Vue.createApp({
       this.currentRound = 0,
       this.winner = null,
       this.logMessages = []
-      console.log(this.monsterMaxHealth);
-      console.log(this.monsterHealth);
-      console.log(newMonster);
     },
     attackMonster(){
-      this.currentRound++;
       const attackIndex = getRandomValue(0, this.player.attacks.length)
       const attackValue = getRandomValue(this.player.minDamage, this.player.maxDamage)
       this.monsterHealth -= attackValue;
-      this.addLogMessage("player", "attack", this.player.attacks[attackIndex], attackValue);
+      this.addLogMessage("player", "attack", this.player.attacks[attackIndex], attackValue, this.currentRound);
       this.attackPlayer();
     },
     attackPlayer(){
@@ -158,37 +153,39 @@ const app = Vue.createApp({
       const attackIndex = getRandomValue(0, enemy.attacks.length)
       const attackValue = getRandomValue(enemy.minDamage, enemy.maxDamage)
       this.player.health -= attackValue;
-      this.addLogMessage(enemy.name, "attack", enemy.attacks[attackIndex], attackValue);
+      this.addLogMessage(enemy.name, "attack", enemy.attacks[attackIndex], attackValue, this.currentRound);
+      this.currentRound++;
     },
     specialAttackMonster(){
-      this.currentRound++;
       const specialAttackIndex = getRandomValue(0, this.player.specialAttacks.length)
       const attackValue = getRandomValue(200, 360)
       this.monsterHealth -= attackValue;
-      this.addLogMessage("player", "special-attack", this.player.specialAttacks[specialAttackIndex], attackValue);
+      this.addLogMessage("player", "special-attack", this.player.specialAttacks[specialAttackIndex], attackValue, this.currentRound);
       this.attackPlayer();
     },
     healPlayer(){
-      this.currentRound++;
       const healValue = getRandomValue(150, 300)
       if (this.player.health + healValue > this.player.maxHealth) {
         this.player.health = this.player.maxHealth;
       } else {
         this.player.health += healValue;
       }
-      this.addLogMessage("player", "heal", "healing word", healValue);
+      this.addLogMessage("player", "heal", "healing word", healValue, this.currentRound);
       this.attackPlayer();
     },
     surrender(){
       this.winner = "monster";
     },
-    addLogMessage(who, what, type, value){
-      this.logMessages.unshift({
+    addLogMessage(who, what, type, value, round){
+      roundDetails = this.logMessages[round] ? this.logMessages[round] : []
+      roundDetails.unshift({
         actionBy: who,
         actionType: what,
         actionName: type,
-        actionValue: value
+        actionValue: value,
+        actionRound: round + 1,
       });
+      this.logMessages[round] = roundDetails
     }
   }
 });
